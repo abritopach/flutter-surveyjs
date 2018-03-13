@@ -29,4 +29,13 @@ class SurveyProvider {
     return JSON.decode(response.body);
   }
 
+  // Returns the list of archive surveys.
+  static Future<List> getArchiveSurveys() async {
+    // Make a HTTP GET request to the SurveyJS API.
+    // Await basically pauses execution until the get() function returns a Response
+    http.Response response = await http.get(baseURL + 'getArchive?ownerId=' + ownerId + '&accessKey=' + accessKey);
+    // Using the JSON class to decode the JSON String
+    return JSON.decode(response.body);
+  }
+
 }

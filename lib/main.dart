@@ -18,8 +18,11 @@ void main() async {
   // Before printing it to the Console
   print(activeSurveys);
 
+  List archiveSurveys = await SurveyProvider.getArchiveSurveys();
+  print(archiveSurveys);
+
   runApp(new MaterialApp(
-    home: new MyApp(activeSurveys),
+    home: new MyApp(activeSurveys, archiveSurveys),
   ));
 }
 
@@ -40,10 +43,11 @@ class MyApp extends StatelessWidget {
 
   // The underscore before a variable name marks it as a private variable.
   final List _activeSurveys;
+  final List _archiveSurveys;
 
   // This is a constructor in Dart. We are assigning the value passed to the constructor
   // to the _activeSurveys variable
-  MyApp(this._activeSurveys);
+  MyApp(this._activeSurveys, this._archiveSurveys);
 
   // This widget is the root of your application.
 
@@ -109,16 +113,18 @@ class MyApp extends StatelessWidget {
       child: new Column(
         // A column widget can have several widgets that are placed in a top down fashion
         children: <Widget>[
-          _getAppTitleWidget(),
-          _getListViewWidget()
+          _getAppTitleWidget("Active Surveys"),
+          _getListViewWidget(_activeSurveys),
+          _getAppTitleWidget("Archive Surveys"),
+          _getListViewWidget(_archiveSurveys),
         ],
       ),
     );
   }
 
-  Widget _getAppTitleWidget() {
+  Widget _getAppTitleWidget(String text) {
     return new Text(
-      'Active Surveys',
+      text,
       style: new TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
@@ -127,25 +133,25 @@ class MyApp extends StatelessWidget {
   }
 
 
-  Widget _getListViewWidget() {
+  Widget _getListViewWidget(surveys) {
     // We want the ListView to have the flexibility to expand to fill the
     // available space in the vertical axis
     return new Flexible(
         child: new ListView.builder(
             // The number of items to show
-            itemCount: _activeSurveys.length,
+            itemCount: surveys.length,
             // Callback that should return ListView children
             // The index parameter = 0...(itemCount-1)
             itemBuilder: (context, index) {
               // Get the currency at this position
-              final Map activeSurvey = _activeSurveys[index];
-              print(activeSurvey);
+              final Map survey = surveys[index];
+              print(survey);
 
               // Get the icon color. Since x mod y, will always be less than y,
               // this will be within bounds.
               final MaterialColor color = _colors[index % _colors.length];
 
-              return _getListItemWidget(activeSurvey, color);
+              return _getListItemWidget(survey, color);
             }));
   }
 
@@ -175,21 +181,21 @@ class MyApp extends StatelessWidget {
     return new Text(surveyDatetime);
   }
 
-  ListTile _getListTile(Map activeSurvey, MaterialColor color) {
+  ListTile _getListTile(Map survey, MaterialColor color) {
     return new ListTile(
       leading: _getLeadingWidget(),
-      title: _getTitleWidget(activeSurvey['Name']),
-      subtitle: _getSubtitleWidget(activeSurvey['CreatedAt']),
+      title: _getTitleWidget(survey['Name']),
+      subtitle: _getSubtitleWidget(survey['CreatedAt']),
       isThreeLine: true,
     );
   }
 
-  Container _getListItemWidget(Map activeSurvey, MaterialColor color) {
+  Container _getListItemWidget(Map survey, MaterialColor color) {
     // Returns a container widget that has a card child and a top margin of 5.0
     return new Container(
       margin: const EdgeInsets.only(top: 2.0),
       child: new Card(
-        child: _getListTile(activeSurvey, color),
+        child: _getListTile(survey, color),
       ),
     );
   }

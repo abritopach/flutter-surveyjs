@@ -11,8 +11,8 @@ import 'package:http/http.dart' as http;
 
 class SurveyProvider {
 
-  static final ownerId = Uri.encodeFull("ownerId");
-  static const accessKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+  static final ownerId = Uri.encodeFull("adrbrpa1988@gmail.com");
+  static const accessKey = "9e68b59e90e1425c9b58d64a352b0d00";
   static const baseURL = "https://dxsurvey.com/api/MySurveys/";
   
   // Returns the list of active surveys.

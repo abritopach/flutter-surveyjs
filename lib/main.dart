@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 
 import './services/survey.dart';
 
+import 'dart:math';
+
 // void main() => runApp(new MyApp());
 
 void main() async {
@@ -25,6 +27,14 @@ class MyApp extends StatelessWidget {
 
   // This is a list of material colors. Feel free to add more colors, it won't break the code
   final List<MaterialColor> _colors = [Colors.blue, Colors.indigo, Colors.red];
+
+  // This is a list of default survey images.
+  final List<String> _defaultImages = [
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR19BtoFx3xVnvGn2adHVpdkQHNx7rhGB4nzhyy3uxBLoioIfL3Dg",
+        "https://static.e-encuesta.com/wp-content/uploads/satisfaccion-cliente-v6.png",
+        "http://www.redcresearch.ie/wp-content/uploads/2015/12/14.png",
+        "http://www.redcresearch.ie/wp-content/uploads/2015/12/30.png"
+    ];
 
   final List<String> _images = [];
 
@@ -64,15 +74,38 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      appBar: new AppBar(
+          title: const Text('Flutter & SurveyJS Demo APP'),
+          backgroundColor: Colors.indigo,
+      ),
       body: _buildBody(),
       backgroundColor: Colors.blue,
+      bottomNavigationBar: _buildFooter()
     );
+  }
+
+  Widget _buildFooter() {
+    return new Container(
+      height: 56.0,
+      color: Colors.indigo,
+      child: new Row(
+        children: <Widget>[ new Text(
+            '© 2018 Adrián Brito Pacheco',
+            style: new TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0
+            ),
+            textAlign: TextAlign.center,
+        )]
+      )
+      );
   }
 
   Widget _buildBody() {
     return new Container(
       // A top margin of 56.0. A left and right margin of 8.0. And a bottom margin of 0.0.
-      margin: const EdgeInsets.fromLTRB(8.0, 56.0, 8.0, 0.0),
+      margin: const EdgeInsets.fromLTRB(8.0, 20.0, 8.0, 0.0),
       child: new Column(
         // A column widget can have several widgets that are placed in a top down fashion
         children: <Widget>[
@@ -85,11 +118,11 @@ class MyApp extends StatelessWidget {
 
   Widget _getAppTitleWidget() {
     return new Text(
-      'Flutter & SurveyJS Demo APP',
+      'Active Surveys',
       style: new TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
-          fontSize: 24.0),
+          fontSize: 20.0),
     );
   }
 
@@ -117,8 +150,11 @@ class MyApp extends StatelessWidget {
   }
 
   CircleAvatar _getLeadingWidget() {
+    var random = new Random();
+    var index = random.nextInt(3);
+    print(index);
     return new CircleAvatar(
-      backgroundImage: new NetworkImage("https://cdn.pixabay.com/photo/2017/05/15/23/48/survey-2316468_960_720.png"),
+      backgroundImage: new NetworkImage(_defaultImages.elementAt(index)),
     );
   }
 
@@ -130,6 +166,10 @@ class MyApp extends StatelessWidget {
   }
 
   Text _getSubtitleWidget(String surveyDatetime) {
+    // 2018-01-25T12:33:14.1976253
+    surveyDatetime = surveyDatetime.replaceAll(new RegExp(r'T'), ' ');
+    surveyDatetime = surveyDatetime.substring(0, surveyDatetime.indexOf('.')); 
+    print(surveyDatetime);
     // var formatter = new DateFormat('dd-MM-yyyy HH:mm');
     // String formatted = formatter.format(surveyDatetime);
     return new Text(surveyDatetime);
@@ -147,7 +187,7 @@ class MyApp extends StatelessWidget {
   Container _getListItemWidget(Map activeSurvey, MaterialColor color) {
     // Returns a container widget that has a card child and a top margin of 5.0
     return new Container(
-      margin: const EdgeInsets.only(top: 5.0),
+      margin: const EdgeInsets.only(top: 2.0),
       child: new Card(
         child: _getListTile(activeSurvey, color),
       ),
